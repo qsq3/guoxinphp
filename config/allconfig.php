@@ -144,7 +144,9 @@ $AUTHORITY=array(	'defaultclass' => '1',
 	'userbar' => '2',
 );
 $BASIC=array(	'SITENAME' => 'GuoXinPHP',
+//	'BASEURL' => '127.0.0.1:8080',
 	'BASEURL' => 'liminhome.com:8080',
+//	'announce_url' => '127.0.0.1:8080/announce.php',
 	'announce_url' => 'liminhome.com:8080/announce.php',
 	'mysql_host' => 'localhost',
 	'mysql_user' => 'guolei',
@@ -253,6 +255,7 @@ $MAIN=array(	'site_online' => 'yes',
 	'bitbucket' => 'bitbucket',
 	'torrentnameprefix' => '[LiminHOME]',
 	'showforumstats' => 'yes',
+  // email, automatic
 	'verification' => 'email',
 	'invite_count' => '0',
 	'invite_timeout' => '7',
