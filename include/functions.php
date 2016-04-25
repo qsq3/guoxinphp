@@ -7,15 +7,18 @@ include_once($rootpath . 'include/config.php');
 include_once($rootpath . 'classes/class_advertisement.php');
 require_once($rootpath . get_langfile_path("functions.php"));
 
+// 根据cookie中的key来判断用户的语言环境
 function get_langfolder_cookie()
 {
 	global $deflang;
 	if (!isset($_COOKIE["c_lang_folder"])) {
 		return $deflang;
 	} else {
+    // 位于include/core.php中的方法，获取支持的语言数组
 		$langfolder_array = get_langfolder_list();
 		foreach($langfolder_array as $lf)
 		{
+      // 遍历查找是否支持该语言，不支持的话就返回默认语言
 			if($lf == $_COOKIE["c_lang_folder"])
 			return $_COOKIE["c_lang_folder"];
 		}
@@ -29,14 +32,17 @@ function get_user_lang($user_id)
 	return $lang['site_lang_folder'];
 }
 
+// 获取对应语言的路径
 function get_langfile_path($script_name ="", $target = false, $lang_folder = "")
 {
 	global $CURLANGDIR;
+  // 根据cookis中key判断语言，如chs，cht，en等
 	$CURLANGDIR = get_langfolder_cookie();
 	if($lang_folder == "")
 	{
 		$lang_folder = $CURLANGDIR;
 	}
+  // 拼接语言路径，如 lang/chs/lang_functions.php
 	return "lang/" . ($target == false ? $lang_folder : "_target") ."/lang_". ( $script_name == "" ? substr(strrchr($_SERVER['SCRIPT_NAME'],'/'),1) : $script_name);
 }
 
@@ -1713,6 +1719,7 @@ function dbconn($autoclean = false)
 		register_shutdown_function("autoclean");
 	}
 }
+
 function get_user_row($id)
 {
 	global $Cache, $CURUSER;
