@@ -1,12 +1,16 @@
 <?php
+// 初始化一些变量配置，加载一些方法或叫函数
 require "include/bittorrent.php";
+// 连接mysql数据库，加载用户的数据
 dbconn(true);
 require_once(get_langfile_path());
+// logged in OR return
 loggedinorreturn(true);
 if ($showextinfo['imdb'] == 'yes')
 	require_once ("imdb/imdb.class.php");
 if ($_SERVER["REQUEST_METHOD"] == "POST")
 {
+  // 首页投票逻辑
 	if ($showpolls_main == "yes")
 	{
 		$choice = $_POST["choice"];
@@ -611,11 +615,11 @@ if ($showtrackerload == "yes") {
 	}
 	echo $Cache->next_row();
 // ------------- end: links ------------------//
-// ------------- start: browser, client and code note ------------------//
+// ------------- start: browser, client and code note ------------------友情链接的下方推荐浏览器和BT客户端//
 ?>
 <table width="100%" class="main" border="0" cellspacing="0" cellpadding="0"><tr><td class="embedded">
 <div align="center"><br /><font class="medium"><?php echo $lang_index['text_browser_note'] ?></font></div>
-<div align="center"><a href="http://www.nexusphp.com" title="<?php echo PROJECTNAME?>" target="_blank"><img src="pic/nexus.png" alt="<?php echo PROJECTNAME?>" /></a></div>
+<div align="center"><a href="http://www.liminhome.com" title="<?php echo PROJECTNAME?>" target="_blank"><img src="pic/nexus.png" alt="<?php echo PROJECTNAME?>" /></a></div>
 </td></tr></table>
 <?php
 // ------------- end: browser, client and code note ------------------//

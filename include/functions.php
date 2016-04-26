@@ -2069,6 +2069,7 @@ function menu ($selected = "home") {
 	}else
 	$selected = "";
 	print ("<div id=\"nav\"><ul id=\"mainmenu\" class=\"menu\">");
+  // 下方为选中菜单高亮
 	print ("<li" . ($selected == "home" ? " class=\"selected\"" : "") . "><a href=\"index.php\">" . $lang_functions['text_home'] . "</a></li>");
 	if ($enableextforum != 'yes')
 	print ("<li" . ($selected == "forums" ? " class=\"selected\"" : "") . "><a href=\"forums.php\">".$lang_functions['text_forums']."</a></li>");
@@ -2282,11 +2283,13 @@ else
 		</td>
 		<td class="clear nowrap" align="right" valign="middle">
 <?php if ($Advertisement->enable_ad()){
+// 广告
 		$headerad=$Advertisement->get_ad('header');
 		if ($headerad){
 			echo "<span id=\"ad_header\">".$headerad[0]."</span>";
 		}
 }
+// 捐款
 if ($enabledonation == 'yes'){?>
 			<a href="donate.php"><img src="<?php echo get_forum_pic_folder()?>/donate.gif" alt="Make a donation" style="margin-left: 5px; margin-top: 50px;" /></a>
 <?php
@@ -2298,12 +2301,13 @@ if ($enabledonation == 'yes'){?>
 
 <table class="mainouter" width="982" cellspacing="0" cellpadding="5" align="center">
 	<tr><td id="nav_block" class="text" align="center">
-<?php if (!$CURUSER) { ?>
+<?php if (!$CURUSER) { // 用户未登录，就显示登录/注册?>
 			<a href="login.php"><font class="big"><b><?php echo $lang_functions['text_login'] ?></b></font></a> / <a href="signup.php"><font class="big"><b><?php echo $lang_functions['text_signup'] ?></b></font></a>
 <?php } 
 else {
+  // 如果登录了，就显示登录后的
 	begin_main_frame();
-	menu ();
+	menu();
 	end_main_frame();
 
 	$datum = getdate();
@@ -2356,16 +2360,18 @@ else {
 	
 	$inboxpic = "<img class=\"".($unread ? "inboxnew" : "inbox")."\" src=\"pic/trans.gif\" alt=\"inbox\" title=\"".($unread ? $lang_functions['title_inbox_new_messages'] : $lang_functions['title_inbox_no_new_messages'])."\" />";
 ?>
-
+<!-- 下面的table是用户面板，包括收藏、魔力值、邀请、分享率、上传下载、当前活动、可连接、连接数 -->
 <table id="info_block" cellpadding="4" cellspacing="0" border="0" width="100%"><tr>
 	<td><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr>
 		<td class="bottom" align="left"><span class="medium"><?php echo $lang_functions['text_welcome_back'] ?>, <?php echo get_username($CURUSER['id'])?>  [<a href="logout.php"><?php echo $lang_functions['text_logout'] ?></a>]<?php if (get_user_class() >= UC_MODERATOR) { ?> [<a href="staffpanel.php"><?php echo $lang_functions['text_staff_panel'] ?></a>] <?php }?> <?php if (get_user_class() >= UC_SYSOP) { ?> [<a href="settings.php"><?php echo $lang_functions['text_site_settings'] ?></a>]<?php } ?> [<a href="torrents.php?inclbookmarked=1&amp;allsec=1&amp;incldead=0"><?php echo $lang_functions['text_bookmarks'] ?></a>] <font class = 'color_bonus'><?php echo $lang_functions['text_bonus'] ?></font>[<a href="mybonus.php"><?php echo $lang_functions['text_use'] ?></a>]: <?php echo number_format($CURUSER['seedbonus'], 1)?> <font class = 'color_invite'><?php echo $lang_functions['text_invite'] ?></font>[<a href="invite.php?id=<?php echo $CURUSER['id']?>"><?php echo $lang_functions['text_send'] ?></a>]: <?php echo $CURUSER['invites']?><br />
 
 	<font class="color_ratio"><?php echo $lang_functions['text_ratio'] ?></font> <?php echo $ratio?>  <font class='color_uploaded'><?php echo $lang_functions['text_uploaded'] ?></font> <?php echo mksize($CURUSER['uploaded'])?><font class='color_downloaded'> <?php echo $lang_functions['text_downloaded'] ?></font> <?php echo mksize($CURUSER['downloaded'])?>  <font class='color_active'><?php echo $lang_functions['text_active_torrents'] ?></font> <img class="arrowup" alt="Torrents seeding" title="<?php echo $lang_functions['title_torrents_seeding'] ?>" src="pic/trans.gif" /><?php echo $activeseed?>  <img class="arrowdown" alt="Torrents leeching" title="<?php echo $lang_functions['title_torrents_leeching'] ?>" src="pic/trans.gif" /><?php echo $activeleech?>&nbsp;&nbsp;<font class='color_connectable'><?php echo $lang_functions['text_connectable'] ?></font><?php echo $connectable?> <?php echo maxslots();?></span></td>
 
+<!-- 用户面板右侧的时间 -->
 	<td class="bottom" align="right"><span class="medium"><?php echo $lang_functions['text_the_time_is_now'] ?><?php echo $datum[hours].":".$datum[minutes]?><br />
 
 <?php
+  // 用户面板各个信箱，时间下方
 	if (get_user_class() >= $staffmem_class){
 	$totalreports = $Cache->get_value('staff_report_count');
 	if ($totalreports == ""){
@@ -2399,117 +2405,120 @@ else {
 
 <tr><td id="outer" align="center" class="outer" style="padding-top: 20px; padding-bottom: 20px">
 <?php
+  // 判断有没有广告
 	if ($Advertisement->enable_ad()){
 			$belownavad=$Advertisement->get_ad('belownav');
 			if ($belownavad)
 			echo "<div align=\"center\" style=\"margin-bottom: 10px\" id=\"ad_belownav\">".$belownavad[0]."</div>";
 	}
-if ($msgalert)
-{
-	function msgalert($url, $text, $bgcolor = "red")
-	{
-		print("<p><table border=\"0\" cellspacing=\"0\" cellpadding=\"10\"><tr><td style='border: none; padding: 10px; background: ".$bgcolor."'>\n");
-		print("<b><a href=\"".$url."\"><font color=\"white\">".$text."</font></a></b>");
-		print("</td></tr></table></p><br />");
-	}
-	if($CURUSER['leechwarn'] == 'yes')
-	{
-		$kicktimeout = gettime($CURUSER['leechwarnuntil'], false, false, true);
-		$text = $lang_functions['text_please_improve_ratio_within'].$kicktimeout.$lang_functions['text_or_you_will_be_banned'];
-		msgalert("faq.php#id17", $text, "orange");
-	}
-	if($deletenotransfertwo_account) //inactive account deletion notice
-	{
-		if ($CURUSER['downloaded'] == 0 && ($CURUSER['uploaded'] == 0 || $CURUSER['uploaded'] == $iniupload_main))
-		{
-			$neverdelete_account = ($neverdelete_account <= UC_VIP ? $neverdelete_account : UC_VIP);
-			if (get_user_class() < $neverdelete_account)
-			{
-				$secs = $deletenotransfertwo_account*24*60*60;
-				$addedtime = strtotime($CURUSER['added']);
-				if (TIMENOW > $addedtime+($secs/3)) // start notification if one third of the time has passed
-				{
-					$kicktimeout = gettime(date("Y-m-d H:i:s", $addedtime+$secs), false, false, true);
-					$text = $lang_functions['text_please_download_something_within'].$kicktimeout.$lang_functions['text_inactive_account_be_deleted'];
-					msgalert("rules.php", $text, "gray");
-				}
-			}
-		}
-	}
-	if($CURUSER['showclienterror'] == 'yes')
-	{
-		$text = $lang_functions['text_banned_client_warning'];
-		msgalert("faq.php#id29", $text, "black");
-	}
-	if ($unread)
-	{
-		$text = $lang_functions['text_you_have'].$unread.$lang_functions['text_new_message'] . add_s($unread) . $lang_functions['text_click_here_to_read'];
-		msgalert("messages.php",$text, "red");
-	}
-/*
-	$pending_invitee = $Cache->get_value('user_'.$CURUSER["id"].'_pending_invitee_count');
-	if ($pending_invitee == ""){
-		$pending_invitee = get_row_count("users","WHERE status = 'pending' AND invited_by = ".sqlesc($CURUSER[id]));
-		$Cache->cache_value('user_'.$CURUSER["id"].'_pending_invitee_count', $pending_invitee, 900);
-	}
-	if ($pending_invitee > 0)
-	{
-		$text = $lang_functions['text_your_friends'].add_s($pending_invitee).is_or_are($pending_invitee).$lang_functions['text_awaiting_confirmation'];
-		msgalert("invite.php?id=".$CURUSER[id],$text, "red");
-	}*/
-	$settings_script_name = $_SERVER["SCRIPT_FILENAME"];
-	if (!preg_match("/index/i", $settings_script_name))
-	{
-		$new_news = $Cache->get_value('user_'.$CURUSER["id"].'_unread_news_count');
-		if ($new_news == ""){
-			$new_news = get_row_count("news","WHERE notify = 'yes' AND added > ".sqlesc($CURUSER['last_home']));
-			$Cache->cache_value('user_'.$CURUSER["id"].'_unread_news_count', $new_news, 300);
-		}
-		if ($new_news > 0)
-		{
-			$text = $lang_functions['text_there_is'].is_or_are($new_news).$new_news.$lang_functions['text_new_news'];
-			msgalert("index.php",$text, "green");
-		}
-	}
-
-	if (get_user_class() >= $staffmem_class)
-	{
-		$numreports = $Cache->get_value('staff_new_report_count');
-		if ($numreports == ""){
-			$numreports = get_row_count("reports","WHERE dealtwith=0");
-			$Cache->cache_value('staff_new_report_count', $numreports, 900);
-		}
-		if ($numreports){
-			$text = $lang_functions['text_there_is'].is_or_are($numreports).$numreports.$lang_functions['text_new_report'] .add_s($numreports);
-			msgalert("reports.php",$text, "blue");
-		}
-		$nummessages = $Cache->get_value('staff_new_message_count');
-		if ($nummessages == ""){
-			$nummessages = get_row_count("staffmessages","WHERE answered='no'");
-			$Cache->cache_value('staff_new_message_count', $nummessages, 900);
-		}
-		if ($nummessages > 0) {
-			$text = $lang_functions['text_there_is'].is_or_are($nummessages).$nummessages.$lang_functions['text_new_staff_message'] . add_s($nummessages);
-			msgalert("staffbox.php",$text, "blue");
-		}
-		$numcheaters = $Cache->get_value('staff_new_cheater_count');
-		if ($numcheaters == ""){
-			$numcheaters = get_row_count("cheaters","WHERE dealtwith=0");
-			$Cache->cache_value('staff_new_cheater_count', $numcheaters, 900);
-		}
-		if ($numcheaters){
-			$text = $lang_functions['text_there_is'].is_or_are($numcheaters).$numcheaters.$lang_functions['text_new_suspected_cheater'] .add_s($numcheaters);
-			msgalert("cheaterbox.php",$text, "blue");
-		}
-	}
-}
+  // 判断有没有新短消息
+  if ($msgalert)
+  {
+  	function msgalert($url, $text, $bgcolor = "red")
+  	{
+  		print("<p><table border=\"0\" cellspacing=\"0\" cellpadding=\"10\"><tr><td style='border: none; padding: 10px; background: ".$bgcolor."'>\n");
+  		print("<b><a href=\"".$url."\"><font color=\"white\">".$text."</font></a></b>");
+  		print("</td></tr></table></p><br />");
+  	}
+  	if ($CURUSER['leechwarn'] == 'yes')
+  	{
+  		$kicktimeout = gettime($CURUSER['leechwarnuntil'], false, false, true);
+  		$text = $lang_functions['text_please_improve_ratio_within'].$kicktimeout.$lang_functions['text_or_you_will_be_banned'];
+  		msgalert("faq.php#id17", $text, "orange");
+  	}
+  	if ($deletenotransfertwo_account) //inactive account deletion notice
+  	{
+  		if ($CURUSER['downloaded'] == 0 && ($CURUSER['uploaded'] == 0 || $CURUSER['uploaded'] == $iniupload_main))
+  		{
+  			$neverdelete_account = ($neverdelete_account <= UC_VIP ? $neverdelete_account : UC_VIP);
+  			if (get_user_class() < $neverdelete_account)
+  			{
+  				$secs = $deletenotransfertwo_account*24*60*60;
+  				$addedtime = strtotime($CURUSER['added']);
+  				if (TIMENOW > $addedtime+($secs/3)) // start notification if one third of the time has passed
+  				{
+  					$kicktimeout = gettime(date("Y-m-d H:i:s", $addedtime+$secs), false, false, true);
+  					$text = $lang_functions['text_please_download_something_within'].$kicktimeout.$lang_functions['text_inactive_account_be_deleted'];
+  					msgalert("rules.php", $text, "gray");
+  				}
+  			}
+  		}
+  	}
+  	if ($CURUSER['showclienterror'] == 'yes')
+  	{
+  		$text = $lang_functions['text_banned_client_warning'];
+  		msgalert("faq.php#id29", $text, "black");
+  	}
+  	if ($unread)
+  	{
+  		$text = $lang_functions['text_you_have'].$unread.$lang_functions['text_new_message'] . add_s($unread) . $lang_functions['text_click_here_to_read'];
+  		msgalert("messages.php",$text, "red");
+  	}
+  /*
+  	$pending_invitee = $Cache->get_value('user_'.$CURUSER["id"].'_pending_invitee_count');
+  	if ($pending_invitee == ""){
+  		$pending_invitee = get_row_count("users","WHERE status = 'pending' AND invited_by = ".sqlesc($CURUSER[id]));
+  		$Cache->cache_value('user_'.$CURUSER["id"].'_pending_invitee_count', $pending_invitee, 900);
+  	}
+  	if ($pending_invitee > 0)
+  	{
+  		$text = $lang_functions['text_your_friends'].add_s($pending_invitee).is_or_are($pending_invitee).$lang_functions['text_awaiting_confirmation'];
+  		msgalert("invite.php?id=".$CURUSER[id],$text, "red");
+  	}*/
+    // 管理员消息
+  	$settings_script_name = $_SERVER["SCRIPT_FILENAME"];
+  	if (!preg_match("/index/i", $settings_script_name))
+  	{
+  		$new_news = $Cache->get_value('user_'.$CURUSER["id"].'_unread_news_count');
+  		if ($new_news == ""){
+  			$new_news = get_row_count("news","WHERE notify = 'yes' AND added > ".sqlesc($CURUSER['last_home']));
+  			$Cache->cache_value('user_'.$CURUSER["id"].'_unread_news_count', $new_news, 300);
+  		}
+  		if ($new_news > 0)
+  		{
+  			$text = $lang_functions['text_there_is'].is_or_are($new_news).$new_news.$lang_functions['text_new_news'];
+  			msgalert("index.php",$text, "green");
+  		}
+  	}
+  
+  	if (get_user_class() >= $staffmem_class)
+  	{
+  		$numreports = $Cache->get_value('staff_new_report_count');
+  		if ($numreports == ""){
+  			$numreports = get_row_count("reports","WHERE dealtwith=0");
+  			$Cache->cache_value('staff_new_report_count', $numreports, 900);
+  		}
+  		if ($numreports){
+  			$text = $lang_functions['text_there_is'].is_or_are($numreports).$numreports.$lang_functions['text_new_report'] .add_s($numreports);
+  			msgalert("reports.php",$text, "blue");
+  		}
+  		$nummessages = $Cache->get_value('staff_new_message_count');
+  		if ($nummessages == ""){
+  			$nummessages = get_row_count("staffmessages","WHERE answered='no'");
+  			$Cache->cache_value('staff_new_message_count', $nummessages, 900);
+  		}
+  		if ($nummessages > 0) {
+  			$text = $lang_functions['text_there_is'].is_or_are($nummessages).$nummessages.$lang_functions['text_new_staff_message'] . add_s($nummessages);
+  			msgalert("staffbox.php",$text, "blue");
+  		}
+  		$numcheaters = $Cache->get_value('staff_new_cheater_count');
+  		if ($numcheaters == ""){
+  			$numcheaters = get_row_count("cheaters","WHERE dealtwith=0");
+  			$Cache->cache_value('staff_new_cheater_count', $numcheaters, 900);
+  		}
+  		if ($numcheaters){
+  			$text = $lang_functions['text_there_is'].is_or_are($numcheaters).$numcheaters.$lang_functions['text_new_suspected_cheater'] .add_s($numcheaters);
+  			msgalert("cheaterbox.php",$text, "blue");
+  		}
+  	}
+  }
 		if ($offlinemsg)
 		{
 			print("<p><table width=\"737\" border=\"1\" cellspacing=\"0\" cellpadding=\"10\"><tr><td style='padding: 10px; background: red' class=\"text\" align=\"center\">\n");
 			print("<font color=\"white\">".$lang_functions['text_website_offline_warning']."</font>");
 			print("</td></tr></table></p><br />\n");
 		}
-}
+  }
 }
 
 
@@ -2517,6 +2526,7 @@ function stdfoot() {
 	global $SITENAME,$BASEURL,$Cache,$datefounded,$tstart,$icplicense_main,$add_key_shortcut,$query_name, $USERUPDATESET, $CURUSER, $enablesqldebug_tweak, $sqldebug_tweak, $Advertisement, $analyticscode_tweak;
 	print("</td></tr></table>");
 	print("<div id=\"footer\">");
+  // 判断是否有footer广告
 	if ($Advertisement->enable_ad()){
 			$footerad=$Advertisement->get_ad('footer');
 			if ($footerad)
@@ -2527,6 +2537,7 @@ function stdfoot() {
 		sql_query("UPDATE users SET " . join(",", $USERUPDATESET) . " WHERE id = ".$CURUSER['id']);
 	}
 	// Variables for End Time
+  // 版权信息和页面访问用时
 	$tend = getmicrotime();
 	$totaltime = ($tend - $tstart);
 	$year = substr($datefounded, 0, 4);
@@ -3928,6 +3939,7 @@ function get_torrent_promotion_append($promotion = 1,$forcemode = "",$showtimele
 	}
 	return $sp_torrent;
 }
+
 function get_torrent_promotion_append_sub($promotion = 1,$forcemode = "",$showtimeleft = false, $added = "", $promotionTimeType = 0, $promotionUntil = ''){
   global $CURUSER,$lang_functions;
   global $expirehalfleech_torrent, $expirefree_torrent, $expiretwoup_torrent, $expiretwoupfree_torrent, $expiretwouphalfleech_torrent, $expirethirtypercentleech_torrent;
